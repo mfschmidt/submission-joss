@@ -12,6 +12,7 @@ authors:
     orcid: 0000-0001-6510-0676
     affiliation: 1, 2
   - name: Eric Hauser
+    orcid: 0000-0002-5341-1182
     affiliation: 1, 2
   - name: Mike Schmidt
     orcid: 0000-0003-4721-1457
@@ -78,12 +79,12 @@ currently supports over 100,000 module/parameter combinations.
 
 PICNIC is designed for in vivo brain investigations by expert PET researchers,
 and has already been applied to preprocess data for recent scientific
-publications from our Lab [@Graves2024Gut, @Bartlett2024TSPO, 
+publications from [our Lab](https://www.columbiapsychiatry.org/research-labs/brain-imaging-lab)
+[@Graves2024Gut, @Bartlett2024TSPO, 
 @Matheson2024Biologically, @Bartlett2024Dual, @Bartlett2024Quantification,
 @Herzog2024ER176, @Bartlett2023Vivo, @Bartlett2023Relationships,
 @Bartlett2023Investigation, @Mann2022Neuroinflammation, @Miller2022Relationships,
-@Herzog2025Neuroinflammation]
-(https://www.columbiapsychiatry.org/research-labs/brain-imaging-lab). PICNIC’s
+@Herzog2025Neuroinflammation]. PICNIC’s
 modular nature enables extensive customization of preprocessing for a variety of
 brain PET studies, and its design may allow future extension to preprocessing of
 data from imaging modalities other than PET. The source code for PICNIC is
