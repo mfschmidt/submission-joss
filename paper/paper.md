@@ -1,56 +1,108 @@
 ---
-title: 'The Experiment Factory: Reproducible Experiment Containers'
+title: 'PICNIC: an open-source Python library for preprocessing of dynamic Positron Emission Tomography (PET) brain imaging data'
 tags:
-  - containers
-  - docker
-  - psychology
-  - reproducibility
-  - Docker
+  - Python
+  - PET
+  - brain imaging
+  - pet preprocessing
+  - open-source
+  - PICNIC
 authors:
- - name: Vanessa Sochat
-   orcid: 0000-0002-4387-3819
-   affiliation: 1
+  - name: Francesca Zanderigo
+    orcid: 0000-0001-6510-0676
+    affiliation: 1, 2
+  - name: Eric Hauser
+    affiliation: 1, 2
+  - name: Mike Schmidt
+    orcid: 0000-0003-4721-1457
+    affiliation: 1, 2
+  - name: Elizabeth A Bartlett
+    orcid: 0000-0002-9174-9951
+    affiliation: 1, 2
+  - name: Jeffrey M Miller
+    orcid: 0000-0002-2206-9311
+    affiliation: 1, 2
 affiliations:
- - name: Stanford University Research Computing
+ - name: Department of Psychiatry, Columbia University Medical Center, New York, NY, United States
    index: 1
-date: 28 November 2017
+ - name: Molecular Imaging and Neuropathology Area, New York State Psychiatric Institute, New York, NY, United States
+   index: 2
+date: 17 July 2025
 bibliography: paper.bib
+
 ---
 
 # Summary
 
-The Experiment Factory [@vanessa_sochat_2017_1059119] is Open Source software that makes it easy to generate reproducible behavioral experiments. It offers a browsable, and tested [library](https://expfactory.github.io/experiments/) of experiments, games, and surveys, support for multiple kinds of databases, and [robust documentation](https://expfactory.github.io/expfactory/) for the provided tools. A user interested in deploying a behavioral assessment can simply select a grouping of paradigms from the web interface, and build a container to serve them.
+PICNIC (Pipeline Initializing Container for Neuro-Imaging Computations) is an
+open-source Python-based coding library that includes modular wrappers for most
+standard preprocessing steps for quantification of PET brain imaging data.
+PICNIC uniquely allows full, transparent modular control over the selection of
+strategy/software package and associated parameters for each preprocessing step
+throughout the pipeline. Therefore, the user is provided with the flexibility to
+select different methods depending on the target of interest and/or radiotracer
+properties, study population, or other preferences. These settings can be saved
+as a text-based “input deck” file to support consistent preprocessing across
+scans, participants, and projects. Furthermore, PICNIC supports freezing
+software versions within Docker containers, ensuring robust reproducibility.
 
-![img/portal.png](img/portal.png)
+PICNIC does not require Brain Imaging Data Structure (BIDS) source-level data,
+but instead takes reconstructed PET static or dynamic data in industry standard
+imaging filetypes (e.g., DICOM, Nifti, ANALYZE), and converts them to be
+BIDS-compliant [@Knudsen2020Guidelines]. PICNIC employs the most commonly used
+brain imaging software packages, including Advanced Normalization Tools [@Avants2008Symmetric],
+Analysis of Function NeuroImages [@Cox1996AFNI], FSL [@Jenkinson2012Fsl],
+FreeSurfer [@Fischl2012FreeSurfer], dcm2niix [@Li2016DICOM], and SPM [@SPM12].
+PICNIC was designed with PET in mind, but includes steps involving data from 
+multiple imaging modalities, most prominently structural magnetic resonance imaging (sMRI).
+PICNIC preprocessing capabilities include image reorientation (to force all images into
+a standard orientation regardless of scanner defaults), brain extraction (to
+perform skull-stripping of associated sMRI images), tissue segmentation (to
+classify sMRI voxels within the brain boundary as grey matter vs. white matter
+vs. cerebrospinal fluid), automatic anatomical parcellation (to identify regions
+of interest using any available atlas/parcellation), post-reconstruction
+rigid-body motion-correction (to correct inter-frame participant motion over the
+duration of the scan), PET-sMRI co-registration (with 20 different PET-sMRI
+rigid-body transformations that are automatically ranked based on mutual
+information), and extraction of time-activity-curves (curves that represent the
+PET signal over the duration of the scan in delineated regions of interest or in
+each brain voxel). 
 
+PICNIC can be run from the command line or through the provided graphical user
+interface. An html summary output with interactive quality control features
+allows the user to inspect, comment, and approve/disapprove each module for each
+participant upon completion. Pre-loaded templates have been provided for
+commonly used workflows. The user can add, remove or edit pre-processing steps
+to fully customize their pipeline with regards to their dataset. PICNIC
+currently supports over 100,000 module/parameter combinations.
 
-# Challenges with Behavioral Research
+PICNIC is designed for in vivo brain investigations by expert PET researchers,
+and has already been applied to preprocess data for recent scientific
+publications from our Lab [@Graves2024Gut, @Bartlett2024TSPO, 
+@Matheson2024Biologically, @Bartlett2024Dual, @Bartlett2024Quantification,
+@Herzog2024ER176, @Bartlett2023Vivo, @Bartlett2023Relationships,
+@Bartlett2023Investigation, @Mann2022Neuroinflammation, @Miller2022Relationships,
+@Herzog2025Neuroinflammation]
+(https://www.columbiapsychiatry.org/research-labs/brain-imaging-lab). PICNIC’s
+modular nature enables extensive customization of preprocessing for a variety of
+brain PET studies, and its design may allow future extension to preprocessing of
+data from imaging modalities other than PET. The source code for PICNIC is
+available at the following link: https://github.com/ehauser-mind/PICNIC.git.
 
-The reproducibility crisis [@Ram2013-km, @Stodden2010-cu, @noauthor_2015-ig, @noauthor_undated-sn, @Baker_undated-bx, @Open_Science_Collaboration2015-hb] has been well met by many efforts [@Belmann2015-eb, @Moreews2015-dy, @Boettiger2014-cz, @Santana-Perez2015-wo, @Wandell2015-yt] across scientific disciplines to capture dependencies required for a scientific analysis. Behavioral research is especially challenging, historically due to the need to bring a study participant into the lab, and currently due to needing to develop and validate a well-tested set of paradigms. A common format for these paradigms is a web-based format that can be done on a computer with an internet connection, without one if all resources are provided locally. However, while many great tools exist for creating the web-based paradigms [@De_Leeuw2015-zw, @McDonnell2012-ns], still lacking is assurance that the generated paradigms will be reproducible. Specifically, the following challenges remain:
+# Statement of need
 
- - **Dependencies** such as software, experiment static files, and runtime variables must be captured for reproduciblity.
- - Individual experiments and the library must be **version controlled.**
- - Each experiment could benefit from being maintianed and tested in an **Open Source** fashion. This means that those knowledgable about the paradigm can easily collaborate on code, and others can file issues and ask questions.
- - Tools must allow for **flexibility** to allow different libraries (e.g., JavaScript).
- - The final product should be **easy to deploy** exactly as the creator intended.
-
-The early version of the Experiment Factory [@Sochat2016-pu] did a good job to develop somewhat modular paradigms, and offered a small set of Python tools to generate local, static batteries from a single repository. Unfortunately, it was severely limited in its ability to scale, and provide reproducible deployments via linux containers [@Merkel2014-da]. The experiments were required to conform to specific set of software, the lack of containerization meant that installation was challenging and error prone, and importantly, it did not meet the complete set of goals outlined above. While the `expfactory-docker` [@noauthor_undated-pi, @Sochat2016-pu] image offered a means to deploy experiments to Amazon Mechanical Turk, it required substantial setup and was primarily developed to meet the specific needs of one lab.
-
-![img/expfactory.png](img/expfactory.png)
-
-# Experiment Container Generation
-The software outlined here, "expfactory," shares little with the original implementation beyond the name. Specifically, it allows for encapsulation of all dependencies and static files required for behavioral experimentation, and flexibility to the user for configuration of the deployment. For usage of a pre-existing experiment container, the user simply needs to run the Docker image. For generation of a new, custom container the generation workflow is typically the following:
- 
- - **Selection** The user browses a [library](https://expfactory.github.io/experiments/) of available experiments, surveys, and games. A preview is available directly in the browser, and data saved to the local machine for inspection. The preview reflects exactly what will be installed into the container.
- - **Generation** The user selects one or more paradigms to add to the container, and clicks "Generate." The user runs the command shown in the browser on his or her local machine to produce the custom recipe for the container, called a Dockerfile.
- - **Building** The user builds the container (and optionally adds the Dockerfile to version control or automated building on Docker Hub) and uses it in production. The same container is then available for others that want to reproduce the experiment.
-
-At runtime, the user is then able to select deployment customization such as database (MySQL, PostgreSQL, sqlite3, or default of filesystem), and a study identifier.
-
-
-# Experiment Container Usage
-Once a container is generated and it's unique identifier and image layers served in a registry like Docker Hub, it can be cited in a paper with confidence that others can run and reproduce the work simply by using it.
-
-More information on experiment development and contribution to the expfactory tools, containers, or library is provided at the Experiment Factory  <a href="https://expfactory.github.io/expfactory/" target="_blank">official documentation</a>. This is an Open Source project, and so <a href="https://www.github.com/expfactory/expfactory/issues" target="_blank">feedback and contributions</a> are encouraged and welcome.
+Positron Emission Tomography (PET) is a valuable tool used in research and
+clinical settings to noninvasively image the human brain in vivo. PET can
+quantify up to nanomolar levels of specific components of brain metabolic and
+neurochemical processes, thus providing information on the distribution of
+specific biological targets, such as receptors and enzymes, or on the uptake of
+specific compounds into the brain, like glucose and polyunsaturated fatty acids.
+Rigorous preprocessing of the raw data captured by the PET scanner [@Norgaard2019Optimization]
+is key to obtaining the most accurate estimates of the distribution of a biological 
+target or uptake of a substance using PET. Although a few software packages already
+exist [@Karjalainen2020Magia,@Funck2018APPIAN,@Routier2021Clinica]
+that perform most of the required preprocessing steps, a fully
+open-source library that can modularly and flexibly combine appropriate
+preprocessing strategies depending on the study design at hand is still missing.
 
 # References
